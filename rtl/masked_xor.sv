@@ -2,8 +2,6 @@
 `define MASKED_XOR_SV
 
 `include "dev_package.sv"
-`include "register.sv"
-`include "reduce_xor.sv"
 
 module masked_xor #(
     parameter NUM_SHARES = 2

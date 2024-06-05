@@ -2,7 +2,7 @@
 `define MASKED_DOM_MUL_SV
 
 `include "dev_package.sv"
-`include "register.sv"
+`include "d_register.sv"
 `include "reduce_xor.sv"
 
 module masked_dom_mul #(
@@ -49,9 +49,9 @@ module masked_dom_mul #(
 
     /// @note When instantiating other modules ALWAYS use the verbose syntax
     /// for parameter and argument passing to avoid errors. For example, when
-    /// instantiating a register, do something like:
+    /// instantiating a d_register, do something like:
     /* ```
-        register #(.T(your_input_type)) the_name_of_the_register_instance (
+        d_register #(.T(your_input_type)) the_name_of_the_register_instance (
                     .in_value(the_register_input), 
                     .out_value(the_register_output),
                     .in_clock(in_clock), // <- always use the same clock
@@ -78,7 +78,7 @@ module masked_dom_mul #(
                 end else begin : gen_if_ij_neq
                     assign cross_blind_t0[i][j] = cross_mul_t0[i][j] ^ in_p[quad_index(i, j, NUM_SHARES)];
                 end
-                register #(.T(bit)) gen_reg_ij(
+                d_register #(.T(bit)) gen_reg_ij(
                     .in_value(cross_blind_t0[i][j]), 
                     .out_value(cross_blind_t1[i][j]),
                     .in_clock(in_clock),

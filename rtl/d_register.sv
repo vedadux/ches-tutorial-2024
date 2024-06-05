@@ -1,9 +1,9 @@
-`ifndef REGISTER_SV
-`define REGISTER_SV
+`ifndef D_REGISTER_SV
+`define D_REGISTER_SV
 
 `include "dev_package.sv"
 
-module register (
+module d_register (
     in_value, out_value, in_clock, in_reset
 );
     import dev_package::*;
@@ -28,5 +28,5 @@ module register (
 
     assign reg_value_d = in_value;
     assign out_value = reg_value_q;
-endmodule : register
-`endif // REGISTER_SV
+endmodule : d_register
+`endif // D_REGISTER_SV
