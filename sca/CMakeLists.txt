@@ -27,3 +27,4 @@ endfunction()
 
 add_sca_target(sca_masked_dom_mul)
 add_sca_target(sca_masked_xor)
+add_sca_target(sca_masked_ascon_sbox_dom)
