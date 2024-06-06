@@ -17,11 +17,24 @@
     using V = TransientExpr;
 #endif
 
+#define USE_V1 1
+#define USE_V2 2
+
+#define VERSION USE_V2
+
 void test_dut()
 {
     constexpr uint32_t NUM_QUADRATIC = NUM_SHARES * (NUM_SHARES - 1) / 2;
+    static_assert(NUM_SHARES >= 2 && NUM_SHARES <= 5);
+    #if VERSION == USE_V1
     constexpr uint32_t NUM_RANDOM = 5 * NUM_QUADRATIC;
+    #endif
+    #if VERSION == USE_V2
+    constexpr uint32_t NUM_ZERO = (NUM_SHARES <= 3) ? (NUM_SHARES - 1) : (
+                                  (NUM_SHARES <= 5) ? NUM_SHARES : 0);
     
+    constexpr uint32_t NUM_RANDOM = 5 * NUM_QUADRATIC + 5 * NUM_ZERO;
+    #endif
     SboxChecker<V> checker(FILE_PATH, TOP_MODULE);
 
     PtrVector<V> X;
