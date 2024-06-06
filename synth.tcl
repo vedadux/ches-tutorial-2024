@@ -20,34 +20,6 @@ set JSON_PRE_MAP   $OUT_BASE\_$NUM_SHARES\_pre.json
 set JSON_POST_MAP  $OUT_BASE\_$NUM_SHARES\_post.json
 set STATS_FILE     $OUT_BASE\_$NUM_SHARES\_stats.txt
 
-proc get_gates {filename} {
-    set file [open $filename r]
-    set content [read $file]
-    close $file
-
-    set result ""
-    set pattern {\$_(\S+)_}
-    set matches [regexp -all -inline -lineanchor -- $pattern $content]
-    puts $matches
-    foreach match $matches {
-        if {[string first "$" $match] == -1 &&
-            [string first "DFF" $match] == -1 && 
-            [string first "NOT" $match] == -1} {
-           
-            if {[string equal "AND" $match]} {
-                lappend result "NAND";
-            } elseif {[string equal "XOR" $match]} {
-                lappend result "XOR";
-                lappend result "XNOR";
-            } else {
-                lappend result $match
-            }
-        }
-    }
-    
-    return [join $result ","]
-}
-
 foreach file $IN_FILES {
     yosys read_verilog -defer $file
 }
@@ -63,11 +35,7 @@ if {![string equal "" $LATENCY]} {
 
 yosys synth -top $TOP_MODULE -flatten -noabc
 yosys tee -o $STATS_FILE stat
-set gates [get_gates $STATS_FILE]
-yosys log "Gates are $gates"
-yosys abc -g $gates
 yosys clean
-yosys stat
 
 yosys write_verilog $VLOG_PRE_MAP
 yosys write_json    $JSON_PRE_MAP

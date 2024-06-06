@@ -1,0 +1,29 @@
+cmake_minimum_required(VERSION 3.22)
+project(sca-eval)
+
+set(CMAKE_CXX_STANDARD 17)
+add_subdirectory(coco-verif)
+
+if (NOT DEFINED NUM_SHARES)
+    set(NUM_SHARES 2)
+endif()
+
+function(add_sca_target target_name)
+    if(NOT "${target_name}" MATCHES "^sca_")
+        message(ERROR "target_name does not start with 'sca_'")
+    endif()
+    string(REGEX REPLACE "^sca_" "syn_" syn_target_name "${target_name}")
+    set(syn_target_json "${syn_target_name}_${NUM_SHARES}_pre.json")
+    string(REGEX REPLACE "^sca_" "" module_name "${target_name}")
+    
+    add_executable(${target_name} "${target_name}.cpp")
+    target_compile_options(${target_name} PUBLIC -g)
+    target_compile_definitions(${target_name} PRIVATE NUM_SHARES=${NUM_SHARES})
+    target_compile_definitions(${target_name} PRIVATE FILE_PATH="${CMAKE_SOURCE_DIR}/../syn/${syn_target_json}")
+    target_compile_definitions(${target_name} PRIVATE TOP_MODULE="${module_name}")
+    target_include_directories(${target_name} PRIVATE coco-verif)
+    target_link_libraries(${target_name} PRIVATE cocoverif)
+endfunction()
+
+add_sca_target(sca_masked_dom_mul)
+add_sca_target(sca_masked_xor)

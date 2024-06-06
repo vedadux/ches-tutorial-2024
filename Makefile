@@ -9,6 +9,7 @@ TB_DIR = tb
 CPP_DIR = cpp
 OBJ_DIR = obj
 SYN_DIR = syn
+SCA_DIR = sca
 
 VERILATOR_FLAGS = --Mdir $(OBJ_DIR) -CFLAGS -I$(shell pwd)/$(CPP_DIR) -cc -sv -I$(SV_DIR) --exe --build -Wall -O0
 VERILATOR_SYN_FLAGS = --Mdir $(OBJ_DIR) -CFLAGS -I$(shell pwd)/$(CPP_DIR) -cc --exe --build -Wall -Wno-unused -Wno-declfilename -Wno-unoptflat -Wno-undriven -O0
@@ -64,6 +65,9 @@ $(OBJ_DIR)/Vsyn_masked%: syn_masked% $(TB_DIR)/tb_masked%.cpp $(CPP_FILES)
 $(OBJ_DIR)/Vsyn_%: syn_% $(TB_DIR)/tb_%.cpp $(CPP_FILES)
 	$(VERILATOR) $(VERILATOR_DEFINES) $(VERILATOR_SYN_FLAGS) $(SYN_DIR)/$<__pre.v $(wordlist 2,$(words $^),$^) --top-module $$(echo $< | sed 's/^syn_//') -o $(shell pwd)/$@
 
+sca_masked%: syn_masked% $(SCA_DIR)/sca_masked%.cpp
+	cmake -B sca/build sca -DNUM_SHARES=$(NUM_SHARES)
+	cmake --build sca/build --target $@
 
 clean:
 	rm -rf $(V_DIR) $(OBJ_DIR) $(SYN_DIR)
