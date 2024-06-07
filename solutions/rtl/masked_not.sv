@@ -13,10 +13,6 @@ module masked_not #(
     input  bit[NUM_SHARES-1:0] in_a;
     output bit[NUM_SHARES-1:0] out_b;
     
-    /// @todo Implement a masked NOT operation.
-
-    /// @details Masking is encoding A as A_0 ^ A_1 ^ ... A_{n-1}.
-    /// To negate the original value, negate just one of the shares.
-
+    assign out_b = {in_a[NUM_SHARES-1:1], ~in_a[0]};
 endmodule : masked_not
 `endif // MASKED_NOT_SV
