@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 project(sca-eval)
 
 set(CMAKE_CXX_STANDARD 17)
-add_subdirectory(coco-verif)
+add_subdirectory(coco-verif-preview)
 
 if (NOT DEFINED NUM_SHARES)
     set(NUM_SHARES 2)
@@ -21,7 +21,7 @@ function(add_sca_target target_name)
     target_compile_definitions(${target_name} PRIVATE NUM_SHARES=${NUM_SHARES})
     target_compile_definitions(${target_name} PRIVATE FILE_PATH="${CMAKE_SOURCE_DIR}/../syn/${syn_target_json}")
     target_compile_definitions(${target_name} PRIVATE TOP_MODULE="${module_name}")
-    target_include_directories(${target_name} PRIVATE coco-verif)
+    target_include_directories(${target_name} PRIVATE coco-verif-preview)
     target_link_libraries(${target_name} PRIVATE cocoverif)
 endfunction()
 
