@@ -59,7 +59,7 @@ Run the following to display your synthesized masked Ascon sbox circuit:
 make show_masked_ascon_sbox_dom;
 ```
 
-## Task 4.1: Fixing the masked Ascon S-Box
+## Task 3.1: Fixing the masked Ascon S-Box
 
 If you have blindly search-and replaced the gates with masked variants, the circuit will not be d-NI, d-SNI or d-PINI secure.
 This is because of the composability rules for d-SNI. The issue is that the xors in the first layer of the Ascon S-Box yield d-NI masked circuits. Plugging the outputs of an d-NI gadget into a d-NI gadget such as the DOM multiplier is insecure!
