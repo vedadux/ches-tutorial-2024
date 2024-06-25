@@ -30,25 +30,44 @@ rm -r obj;
 make obj/Vsyn_ascon_sbox;
 ./obj/Vsyn_ascon_sbox;
 ```
-If you did it correctly, both should say `All tests passed!`. If they don't, look into what is the issue, common mistakes are for example bit order of the inputs and outputs. Modify the testbench `./tb/tb_ascon_sbox.cpp` to figure out what inputs cause this wrong behavior and debug.
+If you did it correctly, both should say `All tests passed!`. If they don't pass, look into what is the issue, common mistakes are for example bit order of the inputs and outputs. Modify the testbench `./tb/tb_ascon_sbox.cpp` to figure out what inputs cause this wrong behavior and debug.
 
 ## Task 2: Go-go Gadget
 
 Your task is to implement the DOM multiplier gadget and masked negation gadget in `./rtl/masked_dom_mul.sv` and `./rtl/masked_not.sv`.
 Follow the instructions provided in those files and the slides. Afterwards, synthesize and test them like explained before.
 
+Moreover, you can use `NUM_SHARES=N make` instead of just make to control the number of shares in your masked design, where `N` is between 2 and 5. Try synthesizing the designs for different `N` and test whether the design still functions correctly and passes all tests.
+
 Next, your goal is to check the side-channel security properties of these gadgets using cocoverif. Here, implement your symbolic cocoverif testbench in `./sca/sca_masked_dom_mul.cpp` by following the instructions there. To compile and run, use
 ```bash
 make sca_masked_dom_mul;
 ./sca/build/sca_masked_dom_mul;
 ```
-The tool will tell you whether or not your design fulfills the desired side-channel composition properties.
+
+The tool will tell you whether or not your design fulfills the desired side-channel composition properties. If it does not, it will tell you exactly which gates cause the issue, and you can debug the exact reason for the issue. Possible mistakes include re-ordering of shares, applying wrong masks and similar.
 
 ## Task 3: Search and Replace
 
 Use your unmasked Ascon implementation as a starting point and implement the masked version by replacing XOR gates with `masked_xor` instantiations, AND gates with `masked_dom_mul` instantiations, and NOT gates with `masked_not` instantiations. Pay attention to the pipelining, and make sure that you are only combining signals in the same pipeline stage. Afterwards, synthesize, simulate and verify the side-channel security using cocoverif.
 
 If the verifier tells you that you messed up somewhere and gives you a counterexample tuple for the NI property, it means that you make a masking error and need to analyze the design. Here, think back on what kinds of combinations of gadgets are safe! Coco will tell you exactly what went wrong and you can inspect the netlist to see what signals got combined that should not have.
+
+To visualize problems, you can again use yosys to display the circuit you are analyzing using the program `xdot`, available through your package manager, e.g., `sudo apt-get xdot`.
+Run the following to display your synthesized masked Ascon sbox circuit:
+```bash
+make show_masked_ascon_sbox_dom;
+```
+
+## Task 4.1: Fixing the masked Ascon S-Box
+
+If you have blindly search-and replaced the gates with masked variants, the circuit will not be d-NI, d-SNI or d-PINI secure.
+This is because of the composability rules for d-SNI. The issue is that the xors in the first layer of the Ascon S-Box yield d-NI masked circuits. Plugging the outputs of an d-NI gadget into a d-NI gadget such as the DOM multiplier is insecure!
+To turn a d-NI xor gadget into a d-SNI gadget, you can refresh its outputs by adding them with an d-SNI sharing of zero, and storing the result in a register before passing it to the output.
+You can generate a sharing of zero using `masked_zero`.
+If `A` is the output of the d-NI xor gadget, we are essentially computing `Reg(A + 0)`, where `0` is the sharing of zero and the overall term is d-SNI.
+
+This is not enough for making something secure in general, as the outputs of the d-NI DOM multipliers are used by another layer of d-NI xor gadget, thus not guaranteeing that everything is d-NI. However, we are in luck and the verifier proves d-NI anyway, and moreover d-PINI. This is because refreshing one input of a DOM multiplier creates the d-PINI HPC1 gadget, which is trivially composable with xor gadgets to yield a d-PINI circuit overall.
 
 ## Task 4: Gifts (Homework)
 

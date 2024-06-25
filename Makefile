@@ -60,6 +60,11 @@ syn_masked%: YOSYS_LOG_SUFFIX = $(NUM_SHARES)_log.txt
 syn_%: $(V_DIR)/%.v $(SYN_DIR)
 	$(YOSYS_DEFINES) IN_FILES="$<" TOP_MODULE="$$(basename -s .v $<)" OUT_BASE="$(SYN_DIR)/$@" LIBERTY="$(LIBERTY_FILE)" $(YOSYS) synth.tcl -t -l "$(SYN_DIR)/$@_$(YOSYS_LOG_SUFFIX)"
 
+show_masked%: $(SYN_DIR)/syn_%_$(NUM_SHARES)_pre.json
+	IN_FILE="$<" $(YOSYS) show.tcl -t
+show_%: $(SYN_DIR)/syn_%__pre.json
+	IN_FILE="$<" $(YOSYS) show.tcl -t
+
 $(OBJ_DIR)/Vsyn_masked%: syn_masked% $(TB_DIR)/tb_masked%.cpp $(CPP_FILES)
 	$(VERILATOR) $(VERILATOR_DEFINES) $(VERILATOR_SYN_FLAGS) $(SYN_DIR)/$<_$(NUM_SHARES)_pre.v $(wordlist 2,$(words $^),$^) --top-module $$(echo $< | sed 's/^syn_//') -o $(shell pwd)/$@
 $(OBJ_DIR)/Vsyn_%: syn_% $(TB_DIR)/tb_%.cpp $(CPP_FILES)
