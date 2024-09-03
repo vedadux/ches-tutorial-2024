@@ -17,7 +17,7 @@ docker run -it --mount type=bind,source="$(pwd)/",target="/home/tutorial/code" c
 ```
 
 The image contains four tools that you require for the tutorial. You can alternatively also do everything natively and install/download the tools from their repositories following the guides provided there. The tutorial requires:
-- [Yosys](https://github.com/YosysHQ/yosys) version `0.41`
+- [Yosys](https://github.com/YosysHQ/yosys) version `0.43`
 - [Verilator](https://github.com/verilator/verilator) version `5.026`
 - [SV2V](https://github.com/zachjs/sv2v) version `0.0.12`
 - [Coco-Verif](https://seafile.iaik.tugraz.at/lib/648b82ce-9306-4416-aa3c-24cf8bd415ef/file/coco-verif-preview.zip) (preview)
@@ -84,7 +84,7 @@ make show_masked_ascon_sbox_dom;
 
 > **(Spoilers, do not read until you finished the above)** 
 >  
-> If you have blindly search-and replaced the gates with masked variants, the circuit will not be d-NI, d-SNI or d-PINI secure. This is because of the composability rules for d-SNI. The issue is that the xors in the first layer of the Ascon S-Box yield d-NI masked circuits. Plugging the outputs of an d-NI gadget into a d-NI gadget such as the DOM multiplier is insecure! To turn a d-NI xor gadget into a d-SNI gadget, you can refresh its outputs by adding them with an d-SNI sharing of zero, and storing the result in a register before passing it to the output. You can generate a sharing of zero using `masked_zero`. If `A` is the output of the d-NI xor gadget, we are essentially computing `Reg(A + 0)`, where `0` is the sharing of zero and the overall term is d-SNI.
+> If you have blindly search-and replaced the gates with masked variants, the circuit will not be d-NI, d-SNI or d-PINI secure. This is because of the composability rules for d-SNI. The issue is that the XORs in the first layer of the Ascon S-Box yield d-NI masked circuits. Plugging the outputs of an d-NI gadget into a d-NI gadget such as the DOM multiplier is insecure! To turn a d-NI xor gadget into a d-SNI gadget, you can refresh its outputs by adding them with an d-SNI sharing of zero, and storing the result in a register before passing it to the output. You can generate a sharing of zero using `masked_zero`. If `A` is the output of the d-NI xor gadget, we are essentially computing `Reg(A + 0)`, where `0` is the sharing of zero and the overall term is d-SNI.
 >
 > This is not enough for making something secure in general, as the outputs of the d-NI DOM multipliers are used by another layer of d-NI xor gadget, thus not guaranteeing that everything is d-NI. However, we are in luck and the verifier proves d-NI anyway, and moreover d-PINI. This is because refreshing one input of a DOM multiplier creates the d-PINI HPC1 gadget, which is trivially composable with xor gadgets to yield a d-PINI circuit overall.
 
