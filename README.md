@@ -1,9 +1,32 @@
 # Setup
 
-Please install Yosys version 0.41, Verilator version 5.024, and the git version of SV2V on your system.
-For details on how to do that please consult [Yosys Repository](https://github.com/YosysHQ/yosys), [Verilator Repository](https://github.com/verilator/verilator) and [SV2V](https://github.com/zachjs/sv2v) for precise instructions. You might also be fine working with your Linux distributions official packaged versions, but this is not well tested. You will also need 
+The easiest way to set everything up is to use `docker`. To install `docker`, follow their official guide, e.g. [this one](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository). Afterwards, you can simply pull the image by doing (use `sudo` depending on your configuration):
+```sh
+docker pull vhadzic/ches-2024-coco-tutorial:v0
+```
+Alternatively, you can also build the image locally from this repository yourself. This should work without issues and take around 10-15 minutes:
+```sh
+docker build -t ches-2024-coco-tutorial
+```
+To spawn a shell in the Docker image, with all places mounted correctly, run one of these two commands depending on your setup:
+```sh
+docker run -it --mount type=bind,source="$(pwd)/",target="/home/tutorial/code" vhadzic/ches-2024-coco-tutorial:v0
+```
+```sh
+docker run -it --mount type=bind,source="$(pwd)/",target="/home/tutorial/code" ches-2024-coco-tutorial
+```
 
-Next, download an unreleased/confidential version of Coco called cocoverif from [IAIK Seafile](https://seafile.iaik.tugraz.at/f/505f2ec68e6448f5b6e7/). It is packaged as a password protected ZIP file, and the password will be shown on the slides at the start of the "Practice" section. Extract the contents, i.e., the `coco-verif-preview` directory to `./sca/`. Afterwards, you should have the relative path `./sca/coco-verif-preview`.
+The image contains four tools that you require for the tutorial. You can alternatively also do everything natively and install/download the tools from their repositories following the guides provided there. The tutorial requires:
+- [Yosys](https://github.com/YosysHQ/yosys) version `0.41`
+- [Verilator](https://github.com/verilator/verilator) version `5.026`
+- [SV2V](https://github.com/zachjs/sv2v) version `0.0.12`
+- [Coco-Verif](https://seafile.iaik.tugraz.at/lib/648b82ce-9306-4416-aa3c-24cf8bd415ef/file/coco-verif-preview.zip) (preview)
+
+*Coco-Verif* is a new upcoming version of Coco, which is better in every way. The download link will give you access to a password protected ZIP file that contains the code necessary for the tutorial. What you are getting here is a preview version for use in the tutorial only. Although we plan to open-source it, this has not happened yet. Unauthorized copying and redistributing of the software is *NOT* allowed. You will get the password for the ZIP file from the CHES organizers and during the tutorial presentation.
+
+### Unlocking Coco-Verif
+
+Using the password, run `./unlock.sh PASWORD_GOES_HERE` from within the Docker image. If you are running everything natively place `coco-verif-preview.zip` into `/opt` first.
 
 # Workflow
 
@@ -59,13 +82,9 @@ Run the following to display your synthesized masked Ascon sbox circuit:
 make show_masked_ascon_sbox_dom;
 ```
 
-## Task 3.1: Fixing the masked Ascon S-Box
-
-If you have blindly search-and replaced the gates with masked variants, the circuit will not be d-NI, d-SNI or d-PINI secure.
-This is because of the composability rules for d-SNI. The issue is that the xors in the first layer of the Ascon S-Box yield d-NI masked circuits. Plugging the outputs of an d-NI gadget into a d-NI gadget such as the DOM multiplier is insecure!
-To turn a d-NI xor gadget into a d-SNI gadget, you can refresh its outputs by adding them with an d-SNI sharing of zero, and storing the result in a register before passing it to the output.
-You can generate a sharing of zero using `masked_zero`.
-If `A` is the output of the d-NI xor gadget, we are essentially computing `Reg(A + 0)`, where `0` is the sharing of zero and the overall term is d-SNI.
+>!  **Fixing the masked Ascon S-Box**
+> 
+>  If you have blindly search-and replaced the gates with masked variants, the circuit will not be d-NI, d-SNI or d-PINI secure. This is because of the composability rules for d-SNI. The issue is that the xors in the first layer of the Ascon S-Box yield d-NI masked circuits. Plugging the outputs of an d-NI gadget into a d-NI gadget such as the DOM multiplier is insecure! To turn a d-NI xor gadget into a d-SNI gadget, you can refresh its outputs by adding them with an d-SNI sharing of zero, and storing the result in a register before passing it to the output. You can generate a sharing of zero using `masked_zero`. If `A` is the output of the d-NI xor gadget, we are essentially computing `Reg(A + 0)`, where `0` is the sharing of zero and the overall term is d-SNI.
 
 This is not enough for making something secure in general, as the outputs of the d-NI DOM multipliers are used by another layer of d-NI xor gadget, thus not guaranteeing that everything is d-NI. However, we are in luck and the verifier proves d-NI anyway, and moreover d-PINI. This is because refreshing one input of a DOM multiplier creates the d-PINI HPC1 gadget, which is trivially composable with xor gadgets to yield a d-PINI circuit overall.
 
