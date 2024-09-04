@@ -22,9 +22,6 @@ docker run -it --mount type=bind,source="$(pwd)/",target="/home/tutorial/code" v
 docker run -it --mount type=bind,source="$(pwd)/",target="/home/tutorial/code" ches-2024-coco-tutorial
 ```
 
-
-
-
 The image contains four tools that you require for the tutorial. You can alternatively also do everything natively and install/download the tools from their repositories following the guides provided there. The tutorial requires:
 - [Yosys](https://github.com/YosysHQ/yosys) version `0.43`
 - [Verilator](https://github.com/verilator/verilator) version `5.026`
