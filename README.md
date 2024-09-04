@@ -8,7 +8,7 @@ Alternatively, you can also build the image locally from this repository yoursel
 ```sh
 docker build -t ches-2024-coco-tutorial
 ```
-Alternatively, you can also download the image from [here](https://seafile.iaik.tugraz.at/f/7ab4f4b5bedb42aba3c6/) or from the local server given during the tutorial. You can then unpack it with:
+Moreover, you can also download the image from [here](https://seafile.iaik.tugraz.at/f/7ab4f4b5bedb42aba3c6/) or from the local server given during the tutorial. You can then unpack it with:
 ```sh
 gzip -d ches-2024-coco-tutorial.tar.gz ;
 docker load -i ches-2024-coco-tutorial.tar
