@@ -26,7 +26,7 @@ RUN cd /build && \
 FROM base AS cocoverif
 
 RUN cd /build && \
-    wget "https://seafile.iaik.tugraz.at/seafhttp/files/4615000b-65a7-47e5-a1c0-27bd68bdba38/coco-verif-preview.zip"
+    wget "https://seafile.iaik.tugraz.at/seafhttp/files/c227090f-e062-4754-91b6-af9be20e17b6/coco-verif-preview.zip"
 
 ###################################
 FROM base AS yosys
