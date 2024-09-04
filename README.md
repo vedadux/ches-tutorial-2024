@@ -8,7 +8,7 @@ Alternatively, you can also build the image locally from this repository yoursel
 ```sh
 docker build -t ches-2024-coco-tutorial
 ```
-Moreover, you can also download the image from [here](https://seafile.iaik.tugraz.at/f/7ab4f4b5bedb42aba3c6/) or from the local server given during the tutorial. You can then unpack it with:
+Moreover, you can also download the image from [here](https://seafile.iaik.tugraz.at/f/7ab4f4b5bedb42aba3c6/) or from the [local server](http://10.70.1.183) given during the tutorial. You can then unpack it with:
 ```sh
 gzip -d ches-2024-coco-tutorial.tar.gz ;
 docker load -i ches-2024-coco-tutorial.tar
@@ -26,7 +26,7 @@ The image contains four tools that you require for the tutorial. You can alterna
 - [Yosys](https://github.com/YosysHQ/yosys) version `0.43`
 - [Verilator](https://github.com/verilator/verilator) version `5.026`
 - [SV2V](https://github.com/zachjs/sv2v) version `0.0.12`
-- [Coco-Verif](https://seafile.iaik.tugraz.at/lib/648b82ce-9306-4416-aa3c-24cf8bd415ef/file/coco-verif-preview.zip) (preview)
+- [Coco-Verif](https://seafile.iaik.tugraz.at/f/9a5cd0939b8347df99d4/) (preview)
 
 *Coco-Verif* is a new upcoming version of Coco, which is better in every way. The download link will give you access to a password protected ZIP file that contains the code necessary for the tutorial. What you are getting here is a preview version for use in the tutorial only. Although we plan to open-source it, this has not happened yet. Unauthorized copying and redistributing of the software is *NOT* allowed. You will get the password for the ZIP file from the CHES organizers and during the tutorial presentation.
 
