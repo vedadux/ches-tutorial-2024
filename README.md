@@ -8,6 +8,12 @@ Alternatively, you can also build the image locally from this repository yoursel
 ```sh
 docker build -t ches-2024-coco-tutorial
 ```
+Alternatively, you can also download the image from [here](https://seafile.iaik.tugraz.at/f/7ab4f4b5bedb42aba3c6/) or from the local server given during the tutorial. You can then unpack it with:
+```sh
+gzip -d ches-2024-coco-tutorial.tar.gz ;
+docker load -i ches-2024-coco-tutorial.tar
+```
+
 To spawn a shell in the Docker image, with all places mounted correctly, run one of these two commands depending on your setup:
 ```sh
 docker run -it --mount type=bind,source="$(pwd)/",target="/home/tutorial/code" vhadzic/ches-2024-coco-tutorial:v0
@@ -15,6 +21,9 @@ docker run -it --mount type=bind,source="$(pwd)/",target="/home/tutorial/code" v
 ```sh
 docker run -it --mount type=bind,source="$(pwd)/",target="/home/tutorial/code" ches-2024-coco-tutorial
 ```
+
+
+
 
 The image contains four tools that you require for the tutorial. You can alternatively also do everything natively and install/download the tools from their repositories following the guides provided there. The tutorial requires:
 - [Yosys](https://github.com/YosysHQ/yosys) version `0.43`
